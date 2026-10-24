@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="DailyVibe: iOS Aesthetic Studio - Beautiful themes, daily streaks, mood check-ins & wallpapers." />
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRGFpbHlWaWJlOiBpT1MgQWVzdGhldGljIFN0dWRpbyIsInNob3J0X25hbWUiOiJEYWlseVZpYmUiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwMDAwMDAiLCJ0aGVtZV9jb2xvciI6IiMwMDAwMDAiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE5qY21sbGxjbWxqYUc5emREb3BMQ0p3Ym1OdlpHbHVaejBpYkdGalpYTnBaVzUwT21WdVpHVnlZMmxsYm1kd1lYSmxNUzl3Ym1OdlpHbHVaejBpYkdGalpYTnBaVzUwT21WdVpHVnlZMmxsYm1kd1lYSmxNUzl3Ym1OdlpHbHVaejBpYkdGalpYTnBaVzUwT21WdVpHVnlZMmxsYm1kd1lYSmxNUzl3Ym1OdlpHbHVaejBpYkdGalpYTnBaVzUwT21WdVpHVnlZMmxsYm1kd1lYSmxNUzl3Ym1OdlpHbHVaejBpYkdGalpYTnBaVzUwT21WdVpHVnlZMmxsYm1kd1lYSmxNQSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==" />
+  <title>DailyVibe: iOS Aesthetic Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0a;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent: #0A84FF;
+      --accent-soft: rgba(10, 132, 255, 0.25);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.65);
+      --glass-blur: 12px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      min-height: 100dvh;
+      padding-top: calc(44px + var(--safe-top));
+      padding-bottom: calc(70px + var(--safe-bottom));
+      transition: background 0.4s ease, color 0.3s ease;
+    }
+
+    /* iOS Status Bar / Dynamic Island style */
+    .status-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: calc(44px + var(--safe-top));
+      padding-top: var(--safe-top);
+      display: flex; align-items: center; justify-content: space-between;
+      padding-left: 20px; padding-right: 16px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .status-time { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+    .status-icons { display: flex; align-items: center; gap: 6px; }
+    .dynamic-island {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 28px; border-radius: 20px;
+      background: #000; border: 1px solid rgba(255,255,255,0.08);
+      top: calc(8px + var(--safe-top));
+    }
+
+    /* Glass cards */
+    .glass {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border-radius: 20px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .glass:active { transform: scale(0.98); }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+      height: calc(64px + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      display: flex; align-items: center; justify-content: space-around;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      color: var(--text-secondary); font-size: 10px; font-weight: 500;
+      padding: 8px 12px; border-radius: 12px; transition: color 0.2s;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-item svg { width: 24px; height: 24px; }
+
+    /* Theme preview swatch */
+    .theme-swatch {
+      width: 100%; aspect-ratio: 9/16; border-radius: 16px; overflow: hidden;
+      position: relative; border: 2px solid transparent;
+    }
+    .theme-swatch.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+    .pro-lock {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.55);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-sheet {
+      width: 100%; max-width: 420px;
+      background: #1c1c1e;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 20px calc(24px + var(--safe-bottom));
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+
+    /* Mood buttons */
+    .mood-btn {
+      flex: 1; padding: 14px 8px; border-radius: 16px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      text-align: center; font-size: 13px; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .mood-btn.selected {
+      background: var(--accent-soft); border-color: var(--accent); color: var(--accent);
+    }
+
+    /* Smooth scroll */
+    .scroll-area { -webkit-overflow-scrolling: touch; }
+
+    /* Hide scrollbar but keep functionality */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.4s ease forwards; }
+
+    /* Wallpaper download toast */
+    .toast {
+      position: fixed; bottom: calc(90px + var(--safe-bottom)); left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30,30,30,0.95); color: #fff;
+      padding: 12px 20px; border-radius: 14px; font-size: 14px; font-weight: 500;
+      opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 150;
+      white-space: nowrap; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-time" id="statusTime">9:41</div>
+    <div class="dynamic-island"></div>
+    <div class="status-icons">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="2" width="3" height="10" rx="0.5"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" opacity="0.35"/></svg>
+      <!-- WiFi -->
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm-3.2-2.3a4.5 4.5 0 016.4 0l-1.1 1.1a3 3 0 00-4.2 0L4.8 7.2zm-2.5-2.5a8 8 0 0111.4 0l-1.1 1.1a6.5 6.5 0 00-9.2 0L2.3 4.7z"/></svg>
+      <!-- Battery -->
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="currentColor" stroke-opacity="0.4"/><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor"/><path d="M23 4v4a2 2 0 000-4z" fill="currentColor" opacity="0.4"/></svg>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="app" class="px-4 pt-3 max-w-lg mx-auto">
+    <!-- HOME VIEW -->
+    <section id="view-home" class="view">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-5 fade-up">
+        <div>
+          <p class="text-sm" style="color: var(--text-secondary)">Good morning</p>
+          <h1 class="text-2xl font-bold tracking-tight">DailyVibe</h1>
+        </div>
+        <div class="glass px-3 py-1.5 flex items-center gap-1.5">
+          <span class="text-lg">🔥</span>
+          <span class="font-semibold text-sm" id="streakCount">0</span>
+          <span class="text-xs" style="color: var(--text-secondary)">Day</span>
+        </div>
+      </div>
+
+      <!-- Daily Quote Card -->
+      <div class="glass p-5 mb-4 fade-up" style="animation-delay: 0.05s">
+        <p class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--accent)">Today's Vibe</p>
+        <p class="text-lg font-medium leading-snug mb-3" id="dailyQuote">Loading...</p>
+        <p class="text-sm" style="color: var(--text-secondary)" id="dailyAuthor">—</p>
+      </div>
+
+      <!-- Mood Check-in -->
+      <div class="glass p-4 mb-5 fade-up" style="animation-delay: 0.1s" id="moodSection">
+        <p class="text-sm font-semibold mb-3">How are you feeling?</p>
+        <div class="flex gap-2">
+          <button class="mood-btn" data-mood="calm" onclick="selectMood('calm')">🌊 Calm</button>
+          <button class="mood-btn" data-mood="focused" onclick="selectMood('focused')">🎯 Focused</button>
+          <button class="mood-btn" data-mood="energetic" onclick="selectMood('energetic')">⚡ Energetic</button>
+        </div>
+        <p class="text-sm mt-3 hidden" id="moodMessage" style="color: var(--text-secondary)"></p>
+      </div>
+
+      <!-- Featured Theme Preview -->
+      <div class="mb-4 fade-up" style="animation-delay: 0.15s">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-semibold">Featured Theme</h2>
+          <button class="text-sm font-medium" style="color: var(--accent)" onclick="switchView('studio')">See all</button>
+        </div>
+        <div class="glass p-3" id="featuredThemeCard">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="grid grid-cols-2 gap-3 fade-up" style="animation-delay: 0.2s">
+        <button class="glass p-4 text-left" onclick="switchView('studio')">
+          <div class="text-2xl mb-1">🎨</div>
+          <div class="font-semibold text-sm">Theme Studio</div>
+          <div class="text-xs mt-0.5" style="color: var(--text-secondary)">20+ aesthetics</div>
+        </button>
+        <button class="glass p-4 text-left" onclick="switchView('streaks')">
+          <div class="text-2xl mb-1">🔥</div>
+          <div class="font-semibold text-sm">Streaks</div>
+          <div class="text-xs mt-0.5" style="color: var(--text-secondary)">Keep the fire</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- STUDIO VIEW -->
+    <section id="view-studio" class="view hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-xl font-bold">Theme Studio</h1>
+        <span class="text-xs px-2 py-1 rounded-full glass" id="themeCountBadge">24 themes</span>
+      </div>
+      <p class="text-sm mb-4" style="color: var(--text-secondary)">Tap any free theme to apply instantly. Pro themes require unlock.</p>
+      <div class="grid grid-cols-2 gap-3" id="themeGrid">
+        <!-- Theme cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- STREAKS VIEW -->
+    <section id="view-streaks" class="view hidden">
+      <h1 class="text-xl font-bold mb-4">Your Streak</h1>
+      <div class="glass p-6 text-center mb-5">
+        <div class="text-5xl mb-2">🔥</div>
+        <div class="text-4xl font-bold" id="streakBig">0</div>
+        <p class="text-sm mt-1" style="color: var(--text-secondary)">Day Streak</p>
+        <p class="text-xs mt-3" style="color: var(--text-secondary)" id="streakHint">Open the app daily to keep your streak alive.</p>
+      </div>
+      <div class="glass p-4">
+        <h3 class="font-semibold mb-2">Daily Tips</h3>
+        <ul class="text-sm space-y-2" style="color: var(--text-secondary)">
+          <li>• Open DailyVibe at least once every day</li>
+          <li>• Check your mood & read the daily vibe</li>
+          <li>• Apply a new theme to stay inspired</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROFILE / ABOUT VIEW -->
+    <section id="view-profile" class="view hidden">
+      <h1 class="text-xl font-bold mb-4">About</h1>
+      <div class="glass p-5 mb-4">
+        <h2 class="font-semibold text-lg mb-1">DailyVibe</h2>
+        <p class="text-sm" style="color: var(--text-secondary)">iOS Aesthetic Studio</p>
+        <p class="text-sm mt-3 leading-relaxed" style="color: var(--text-secondary)">
+          A beautiful, mobile-first Progressive Web App for exploring premium iOS-inspired themes, tracking daily streaks, and setting the perfect vibe.
+        </p>
+      </div>
+      <div class="glass p-4 mb-3">
+        <p class="text-sm font-medium">Version 1.0.0</p>
+        <p class="text-xs mt-1" style="color: var(--text-secondary)">Ready for Web-to-APK packaging</p>
+      </div>
+      <div class="glass p-4">
+        <p class="text-sm font-medium mb-1">Monetization Ready</p>
+        <p class="text-xs" style="color: var(--text-secondary)">Pro themes use a simulated unlock modal — plug in AdMob rewarded ads or $1.99 Pro Pass (Stripe / Play Billing) later.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-view="home" onclick="switchView('home')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </button>
+    <button class="nav-item" data-view="studio" onclick="switchView('studio')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+      Studio
+    </button>
+    <button class="nav-item" data-view="streaks" onclick="switchView('streaks')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/><path d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/></svg>
+      Streak
+    </button>
+    <button class="nav-item" data-view="profile" onclick="switchView('profile')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      About
+    </button>
+  </nav>
+
+  <!-- Unlock Modal -->
+  <div class="modal-overlay" id="unlockModal">
+    <div class="modal-sheet">
+      <div class="w-10 h-1 bg-white/20 rounded-full mx-auto mb-5"></div>
+      <h2 class="text-xl font-bold text-center mb-1">Unlock Pro Theme</h2>
+      <p class="text-sm text-center mb-5" style="color: var(--text-secondary)" id="unlockThemeName">Theme Name</p>
+      <div class="space-y-3">
+        <button class="w-full py-3.5 rounded-2xl font-semibold text-white" style="background: var(--accent)" onclick="simulateUnlock('ad')">
+          ▶️ Watch Rewarded Ad
+        </button>
+        <button class="w-full py-3.5 rounded-2xl font-semibold glass" onclick="simulateUnlock('pass')">
+          💎 Unlock with $1.99 Pro Pass
+        </button>
+        <button class="w-full py-3 rounded-2xl text-sm" style="color: var(--text-secondary)" onclick="closeUnlockModal()">
+          Maybe later
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Wallpaper saved!</div>
+
+  <script>
+    /* =====================================================
+       THEME DEFINITIONS — easily expandable to 40+
+       ===================================================== */
+    const THEMES = [
+      // FREE (first 12)
+      {
+        id: 'oled-deep-black',
+        name: 'OLED Deep Black',
+        free: true,
+        vars: {
+          '--bg-primary': '#000000',
+          '--bg-secondary': '#050505',
+          '--card-bg': 'rgba(255,255,255,0.07)',
+          '--card-border': 'rgba(255,255,255,0.1)',
+          '--accent': '#0A84FF',
+          '--accent-soft': 'rgba(10,132,255,0.25)',
+          '--text-primary': '#ffffff',
+          '--text-secondary': 'rgba(255,255,255,0.6)'
+        },
+        wallpaper: 'linear-gradient(160deg, #000000 0%, #0a0a0a 50%, #111111 100%)'
+      },
+      {
+        id: 'ios-liquid-glass',
+        name: 'iOS Liquid Glass',
+        free: true,
+        vars: {
+          '--bg-primary': '#0c0c0e',
+          '--bg-secondary': '#121214',
+          '--card-bg': 'rgba(255,255,255,0.1)',
+          '--card-border': 'rgba(255,255,255,0.18)',
+          '--accent': '#64D2FF',
+          '--accent-soft': 'rgba(100,210,255,0.25)',
+          '--text-primary': '#f5f5f7',
+          '--text-secondary': 'rgba(245,245,247,0.65)'
+        },
+        wallpaper: 'linear-gradient(145deg, #0c0c0e 0%, #1a1a2e 60%, #16213e 100%)'
+      },
+      {
+        id: 'pastel-minimal',
+        name: 'Pastel Minimal',
+        free: true,
+        vars: {
+          '--bg-primary': '#1a1520',
+          '--bg-secondary': '#221a28',
+          '--card-bg': 'rgba(255,200,220,0.1)',
+          '--card-border': 'rgba(255,200,220,0.2)',
+          '--accent': '#FF9ECD',
+          '--accent-soft': 'rgba(255,158,205,0.25)',
+          '--text-primary': '#fff0f5',
+          '--text-secondary': 'rgba(255,240,245,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #1a1520 0%, #2d1f35 50%, #3a2540 100%)'
+      },
+      {
+        id: 'cyberpunk-neon',
+        name: 'Cyberpunk Neon',
+        free: true,
+        vars: {
+          '--bg-primary': '#0a0014',
+          '--bg-secondary': '#12001f',
+          '--card-bg': 'rgba(255,0,170,0.08)',
+          '--card-border': 'rgba(0,255,255,0.25)',
+          '--accent': '#00F0FF',
+          '--accent-soft': 'rgba(0,240,255,0.25)',
+          '--text-primary': '#e0ffff',
+          '--text-secondary': 'rgba(224,255,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(135deg, #0a0014 0%, #1a0030 40%, #00f0ff22 100%)'
+      },
+      {
+        id: 'cosmic-sunset',
+        name: 'Cosmic Sunset',
+        free: true,
+        vars: {
+          '--bg-primary': '#1a0a14',
+          '--bg-secondary': '#2a1020',
+          '--card-bg': 'rgba(255,120,80,0.1)',
+          '--card-border': 'rgba(255,150,100,0.2)',
+          '--accent': '#FF6B4A',
+          '--accent-soft': 'rgba(255,107,74,0.3)',
+          '--text-primary': '#fff5f0',
+          '--text-secondary': 'rgba(255,245,240,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #1a0a14 0%, #3d1525 40%, #ff6b4a33 100%)'
+      },
+      {
+        id: 'forest-mist',
+        name: 'Forest Mist',
+        free: true,
+        vars: {
+          '--bg-primary': '#0a120e',
+          '--bg-secondary': '#0f1a14',
+          '--card-bg': 'rgba(100,200,140,0.08)',
+          '--card-border': 'rgba(100,200,140,0.18)',
+          '--accent': '#34C759',
+          '--accent-soft': 'rgba(52,199,89,0.25)',
+          '--text-primary': '#e8fff0',
+          '--text-secondary': 'rgba(232,255,240,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #0a120e 0%, #0f2a1a 50%, #1a3d28 100%)'
+      },
+      {
+        id: 'midnight-blue',
+        name: 'Midnight Blue',
+        free: true,
+        vars: {
+          '--bg-primary': '#050a18',
+          '--bg-secondary': '#0a1228',
+          '--card-bg': 'rgba(80,140,255,0.08)',
+          '--card-border': 'rgba(100,160,255,0.18)',
+          '--accent': '#5E9CFF',
+          '--accent-soft': 'rgba(94,156,255,0.25)',
+          '--text-primary': '#e8f0ff',
+          '--text-secondary': 'rgba(232,240,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #050a18 0%, #0a1835 50%, #102a50 100%)'
+      },
+      {
+        id: 'soft-lavender',
+        name: 'Soft Lavender',
+        free: true,
+        vars: {
+          '--bg-primary': '#120f1a',
+          '--bg-secondary': '#1a1525',
+          '--card-bg': 'rgba(180,150,255,0.1)',
+          '--card-border': 'rgba(180,150,255,0.2)',
+          '--accent': '#BF5AF2',
+          '--accent-soft': 'rgba(191,90,242,0.25)',
+          '--text-primary': '#f5f0ff',
+          '--text-secondary': 'rgba(245,240,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(150deg, #120f1a 0%, #1e1530 50%, #2a1a40 100%)'
+      },
+      {
+        id: 'warm-sand',
+        name: 'Warm Sand',
+        free: true,
+        vars: {
+          '--bg-primary': '#1a140e',
+          '--bg-secondary': '#241c14',
+          '--card-bg': 'rgba(255,200,140,0.1)',
+          '--card-border': 'rgba(255,200,140,0.2)',
+          '--accent': '#FF9F0A',
+          '--accent-soft': 'rgba(255,159,10,0.25)',
+          '--text-primary': '#fff8f0',
+          '--text-secondary': 'rgba(255,248,240,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #1a140e 0%, #2a2018 50%, #3a2c1c 100%)'
+      },
+      {
+        id: 'arctic-ice',
+        name: 'Arctic Ice',
+        free: true,
+        vars: {
+          '--bg-primary': '#0a1014',
+          '--bg-secondary': '#0e161c',
+          '--card-bg': 'rgba(180,220,255,0.08)',
+          '--card-border': 'rgba(180,220,255,0.18)',
+          '--accent': '#7DD3FC',
+          '--accent-soft': 'rgba(125,211,252,0.25)',
+          '--text-primary': '#f0f9ff',
+          '--text-secondary': 'rgba(240,249,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #0a1014 0%, #0e1c28 50%, #122830 100%)'
+      },
+      {
+        id: 'rose-gold',
+        name: 'Rose Gold',
+        free: true,
+        vars: {
+          '--bg-primary': '#1a1012',
+          '--bg-secondary': '#241418',
+          '--card-bg': 'rgba(255,180,180,0.1)',
+          '--card-border': 'rgba(255,180,180,0.2)',
+          '--accent': '#FF6B8A',
+          '--accent-soft': 'rgba(255,107,138,0.25)',
+          '--text-primary': '#fff0f2',
+          '--text-secondary': 'rgba(255,240,242,0.65)'
+        },
+        wallpaper: 'linear-gradient(155deg, #1a1012 0%, #2a181c 50%, #3a2028 100%)'
+      },
+      {
+        id: 'emerald-night',
+        name: 'Emerald Night',
+        free: true,
+        vars: {
+          '--bg-primary': '#061210',
+          '--bg-secondary': '#0a1a16',
+          '--card-bg': 'rgba(50,200,150,0.08)',
+          '--card-border': 'rgba(50,200,150,0.18)',
+          '--accent': '#30D158',
+          '--accent-soft': 'rgba(48,209,88,0.25)',
+          '--text-primary': '#e8fff4',
+          '--text-secondary': 'rgba(232,255,244,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #061210 0%, #0a2218 50%, #0e3020 100%)'
+      },
+
+      // PRO (locked)
+      {
+        id: 'aurora-borealis',
+        name: 'Aurora Borealis',
+        free: false,
+        vars: {
+          '--bg-primary': '#040c14',
+          '--bg-secondary': '#081820',
+          '--card-bg': 'rgba(80,255,180,0.08)',
+          '--card-border': 'rgba(80,255,180,0.2)',
+          '--accent': '#5EFFC0',
+          '--accent-soft': 'rgba(94,255,192,0.25)',
+          '--text-primary': '#e8fff8',
+          '--text-secondary': 'rgba(232,255,248,0.65)'
+        },
+        wallpaper: 'linear-gradient(150deg, #040c14 0%, #0a2830 40%, #00ffaa22 100%)'
+      },
+      {
+        id: 'neon-tokyo',
+        name: 'Neon Tokyo',
+        free: false,
+        vars: {
+          '--bg-primary': '#0c0018',
+          '--bg-secondary': '#160028',
+          '--card-bg': 'rgba(255,50,150,0.1)',
+          '--card-border': 'rgba(255,50,150,0.25)',
+          '--accent': '#FF2D95',
+          '--accent-soft': 'rgba(255,45,149,0.3)',
+          '--text-primary': '#ffe8f4',
+          '--text-secondary': 'rgba(255,232,244,0.65)'
+        },
+        wallpaper: 'linear-gradient(140deg, #0c0018 0%, #2a0040 50%, #ff2d9522 100%)'
+      },
+      {
+        id: 'deep-ocean',
+        name: 'Deep Ocean',
+        free: false,
+        vars: {
+          '--bg-primary': '#020c18',
+          '--bg-secondary': '#041428',
+          '--card-bg': 'rgba(40,140,255,0.1)',
+          '--card-border': 'rgba(40,140,255,0.22)',
+          '--accent': '#0A84FF',
+          '--accent-soft': 'rgba(10,132,255,0.3)',
+          '--text-primary': '#e0f0ff',
+          '--text-secondary': 'rgba(224,240,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #020c18 0%, #041e38 50%, #0a84ff22 100%)'
+      },
+      {
+        id: 'golden-hour',
+        name: 'Golden Hour',
+        free: false,
+        vars: {
+          '--bg-primary': '#1a1008',
+          '--bg-secondary': '#281808',
+          '--card-bg': 'rgba(255,180,50,0.1)',
+          '--card-border': 'rgba(255,180,50,0.22)',
+          '--accent': '#FFD60A',
+          '--accent-soft': 'rgba(255,214,10,0.25)',
+          '--text-primary': '#fff8e8',
+          '--text-secondary': 'rgba(255,248,232,0.65)'
+        },
+        wallpaper: 'linear-gradient(155deg, #1a1008 0%, #302010 50%, #ffd60a22 100%)'
+      },
+      {
+        id: 'monochrome-pro',
+        name: 'Monochrome Pro',
+        free: false,
+        vars: {
+          '--bg-primary': '#0a0a0a',
+          '--bg-secondary': '#141414',
+          '--card-bg': 'rgba(255,255,255,0.06)',
+          '--card-border': 'rgba(255,255,255,0.14)',
+          '--accent': '#FFFFFF',
+          '--accent-soft': 'rgba(255,255,255,0.15)',
+          '--text-primary': '#ffffff',
+          '--text-secondary': 'rgba(255,255,255,0.55)'
+        },
+        wallpaper: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%)'
+      },
+      {
+        id: 'sakura-night',
+        name: 'Sakura Night',
+        free: false,
+        vars: {
+          '--bg-primary': '#140c12',
+          '--bg-secondary': '#1e1218',
+          '--card-bg': 'rgba(255,150,180,0.1)',
+          '--card-border': 'rgba(255,150,180,0.2)',
+          '--accent': '#FF85A2',
+          '--accent-soft': 'rgba(255,133,162,0.25)',
+          '--text-primary': '#fff0f4',
+          '--text-secondary': 'rgba(255,240,244,0.65)'
+        },
+        wallpaper: 'linear-gradient(150deg, #140c12 0%, #281820 50%, #ff85a222 100%)'
+      },
+      {
+        id: 'electric-violet',
+        name: 'Electric Violet',
+        free: false,
+        vars: {
+          '--bg-primary': '#0c0818',
+          '--bg-secondary': '#140e28',
+          '--card-bg': 'rgba(150,80,255,0.1)',
+          '--card-border': 'rgba(150,80,255,0.22)',
+          '--accent': '#BF5AF2',
+          '--accent-soft': 'rgba(191,90,242,0.3)',
+          '--text-primary': '#f5e8ff',
+          '--text-secondary': 'rgba(245,232,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(145deg, #0c0818 0%, #1a1040 50%, #bf5af222 100%)'
+      },
+      {
+        id: 'mint-fresh',
+        name: 'Mint Fresh',
+        free: false,
+        vars: {
+          '--bg-primary': '#061410',
+          '--bg-secondary': '#0a1e18',
+          '--card-bg': 'rgba(80,220,180,0.1)',
+          '--card-border': 'rgba(80,220,180,0.2)',
+          '--accent': '#63E6BE',
+          '--accent-soft': 'rgba(99,230,190,0.25)',
+          '--text-primary': '#e8fff8',
+          '--text-secondary': 'rgba(232,255,248,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #061410 0%, #0c2820 50%, #63e6be22 100%)'
+      },
+      {
+        id: 'crimson-shadow',
+        name: 'Crimson Shadow',
+        free: false,
+        vars: {
+          '--bg-primary': '#140808',
+          '--bg-secondary': '#1e0c0c',
+          '--card-bg': 'rgba(255,60,60,0.1)',
+          '--card-border': 'rgba(255,60,60,0.22)',
+          '--accent': '#FF453A',
+          '--accent-soft': 'rgba(255,69,58,0.3)',
+          '--text-primary': '#fff0f0',
+          '--text-secondary': 'rgba(255,240,240,0.65)'
+        },
+        wallpaper: 'linear-gradient(150deg, #140808 0%, #2a1010 50%, #ff453a22 100%)'
+      },
+      {
+        id: 'skyline-dusk',
+        name: 'Skyline Dusk',
+        free: false,
+        vars: {
+          '--bg-primary': '#0e0a18',
+          '--bg-secondary': '#181028',
+          '--card-bg': 'rgba(180,120,255,0.1)',
+          '--card-border': 'rgba(180,120,255,0.2)',
+          '--accent': '#A78BFA',
+          '--accent-soft': 'rgba(167,139,250,0.25)',
+          '--text-primary': '#f5f0ff',
+          '--text-secondary': 'rgba(245,240,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(155deg, #0e0a18 0%, #1c1430 50%, #a78bfa22 100%)'
+      },
+      {
+        id: 'jade-garden',
+        name: 'Jade Garden',
+        free: false,
+        vars: {
+          '--bg-primary': '#06120e',
+          '--bg-secondary': '#0a1c16',
+          '--card-bg': 'rgba(60,200,140,0.1)',
+          '--card-border': 'rgba(60,200,140,0.2)',
+          '--accent': '#00C7BE',
+          '--accent-soft': 'rgba(0,199,190,0.25)',
+          '--text-primary': '#e8fff8',
+          '--text-secondary': 'rgba(232,255,248,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #06120e 0%, #0c241c 50%, #00c7be22 100%)'
+      },
+      {
+        id: 'obsidian-glow',
+        name: 'Obsidian Glow',
+        free: false,
+        vars: {
+          '--bg-primary': '#050508',
+          '--bg-secondary': '#0c0c12',
+          '--card-bg': 'rgba(120,100,255,0.08)',
+          '--card-border': 'rgba(120,100,255,0.2)',
+          '--accent': '#8B7CFF',
+          '--accent-soft': 'rgba(139,124,255,0.25)',
+          '--text-primary': '#f0eeff',
+          '--text-secondary': 'rgba(240,238,255,0.65)'
+        },
+        wallpaper: 'linear-gradient(160deg, #050508 0%, #100c20 50%, #8b7cff22 100%)'
+      }
+    ];
+
+    /* Daily Quotes — rotate by UTC date */
+    const QUOTES = [
+      { q: "Small steps every day lead to big results.", a: "DailyVibe" },
+      { q: "Your vibe attracts your tribe.", a: "Unknown" },
+      { q: "Progress, not perfection.", a: "DailyVibe" },
+      { q: "Be the energy you want to attract.", a: "Unknown" },
+      { q: "Consistency is the key to mastery.", a: "DailyVibe" },
+      { q: "One day or day one. You decide.", a: "Unknown" },
+      { q: "Protect your peace. Guard your energy.", a: "DailyVibe" },
+      { q: "The best project you'll ever work on is you.", a: "Unknown" },
+      { q: "Stay curious. Stay kind.", a: "DailyVibe" },
+      { q: "Your future self is watching. Make them proud.", a: "Unknown" },
+      { q: "Less noise, more focus.", a: "DailyVibe" },
+      { q: "Create a life you don't need a vacation from.", a: "Unknown" },
+      { q: "Discipline is choosing what you want most over what you want now.", a: "DailyVibe" },
+      { q: "Glow from within.", a: "Unknown" },
+      { q: "Every morning is a fresh start.", a: "DailyVibe" }
+    ];
+
+    const MOOD_MESSAGES = {
+      calm: "Take a deep breath. You're exactly where you need to be.",
+      focused: "Lock in. You've got this — one task at a time.",
+      energetic: "Channel that energy into something amazing today!"
+    };
+
+    /* =====================================================
+       STATE & LOCAL STORAGE
+       ===================================================== */
+    let currentThemeId = localStorage.getItem('dv_theme') || 'oled-deep-black';
+    let unlockedThemes = JSON.parse(localStorage.getItem('dv_unlocked') || '[]');
+    let pendingUnlockId = null;
+
+    function getTodayUTC() {
+      return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    }
+
+    function updateStreak() {
+      const today = getTodayUTC();
+      const last = localStorage.getItem('dv_lastOpen');
+      let streak = parseInt(localStorage.getItem('dv_streak') || '0', 10);
+
+      if (last === today) {
+        // already counted today
+      } else if (last) {
+        const lastDate = new Date(last + 'T00:00:00Z');
+        const todayDate = new Date(today + 'T00:00:00Z');
+        const diffDays = Math.round((todayDate - lastDate) / 86400000);
+        if (diffDays === 1) {
+          streak += 1;
+        } else if (diffDays > 1) {
+          streak = 1; // reset
+        }
+      } else {
+        streak = 1;
+      }
+
+      localStorage.setItem('dv_streak', String(streak));
+      localStorage.setItem('dv_lastOpen', today);
+      document.getElementById('streakCount').textContent = streak;
+      document.getElementById('streakBig').textContent = streak;
+    }
+
+    function loadDailyQuote() {
+      const dayIndex = Math.floor(Date.now() / 86400000) % QUOTES.length;
+      const quote = QUOTES[dayIndex];
+      document.getElementById('dailyQuote').textContent = `“${quote.q}”`;
+      document.getElementById('dailyAuthor').textContent = `— ${quote.a}`;
+    }
+
+    function selectMood(mood) {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+      localStorage.setItem('dv_mood', mood);
+      localStorage.setItem('dv_moodDate', getTodayUTC());
+      const msg = document.getElementById('moodMessage');
+      msg.textContent = MOOD_MESSAGES[mood];
+      msg.classList.remove('hidden');
+    }
+
+    function restoreMood() {
+      const mood = localStorage.getItem('dv_mood');
+      const moodDate = localStorage.getItem('dv_moodDate');
+      if (mood && moodDate === getTodayUTC()) {
+        selectMood(mood);
+      }
+    }
+
+    /* =====================================================
+       THEME ENGINE
+       ===================================================== */
+    function applyTheme(themeId) {
+      const theme = THEMES.find(t => t.id === themeId);
+      if (!theme) return;
+
+      const isUnlocked = theme.free || unlockedThemes.includes(themeId);
+      if (!isUnlocked) {
+        openUnlockModal(theme);
+        return;
+      }
+
+      currentThemeId = themeId;
+      localStorage.setItem('dv_theme', themeId);
+
+      const root = document.documentElement;
+      Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+
+      // Update body background with wallpaper feel
+      document.body.style.background = theme.wallpaper;
+
+      // Refresh UI highlights
+      renderThemeGrid();
+      renderFeaturedTheme();
+      showToast(`Applied: ${theme.name}`);
+    }
+
+    function openUnlockModal(theme) {
+      pendingUnlockId = theme.id;
+      document.getElementById('unlockThemeName').textContent = theme.name;
+      document.getElementById('unlockModal').classList.add('open');
+    }
+
+    function closeUnlockModal() {
+      document.getElementById('unlockModal').classList.remove('open');
+      pendingUnlockId = null;
+    }
+
+    function simulateUnlock(method) {
+      if (!pendingUnlockId) return;
+      // Simulate successful unlock (ready for AdMob / billing hooks)
+      if (!unlockedThemes.includes(pendingUnlockId)) {
+        unlockedThemes.push(pendingUnlockId);
+        localStorage.setItem('dv_unlocked', JSON.stringify(unlockedThemes));
+      }
+      const id = pendingUnlockId;
+      closeUnlockModal();
+      applyTheme(id);
+      showToast(method === 'ad' ? 'Theme unlocked via ad!' : 'Pro Pass activated!');
+    }
+
+    /* =====================================================
+       WALLPAPER DOWNLOAD
+       ===================================================== */
+    function downloadWallpaper(themeId) {
+      const theme = THEMES.find(t => t.id === themeId);
+      if (!theme) return;
+
+      // Create a high-res canvas matching the aesthetic
+      const canvas = document.createElement('canvas');
+      canvas.width = 1170; // iPhone-like resolution
+      canvas.height = 2532;
+      const ctx = canvas.getContext('2d');
+
+      // Parse simple linear-gradient for canvas (basic support)
+      // Fallback solid + gradient simulation
+      const bg = theme.vars['--bg-primary'] || '#000';
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Soft radial glow using accent
+      const accent = theme.vars['--accent'] || '#0A84FF';
+      const grd = ctx.createRadialGradient(
+        canvas.width * 0.7, canvas.height * 0.3, 0,
+        canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.9
+      );
+      grd.addColorStop(0, accent + '44');
+      grd.addColorStop(0.5, accent + '11');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Second soft glow bottom
+      const grd2 = ctx.createRadialGradient(
+        canvas.width * 0.2, canvas.height * 0.85, 0,
+        canvas.width * 0.3, canvas.height * 0.9, canvas.width * 0.7
+      );
+      grd2.addColorStop(0, (theme.vars['--accent'] || '#fff') + '22');
+      grd2.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd2;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Subtle noise-like dots (very light)
+      ctx.fillStyle = 'rgba(255,255,255,0.03)';
+      for (let i = 0; i < 80; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        ctx.beginPath();
+        ctx.arc(x, y, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `DailyVibe-${theme.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Wallpaper saved to gallery!');
+      }, 'image/png');
+    }
+
+    /* =====================================================
+       RENDERERS
+       ===================================================== */
+    function renderThemeGrid() {
+      const grid = document.getElementById('themeGrid');
+      grid.innerHTML = THEMES.map(theme => {
+        const unlocked = theme.free || unlockedThemes.includes(theme.id);
+        const active = currentThemeId === theme.id;
+        return `
+          <div class="glass p-2.5">
+            <div class="theme-swatch ${active ? 'active' : ''}" style="background: ${theme.wallpaper}" onclick="applyTheme('${theme.id}')">
+              ${!unlocked ? `
+                <div class="pro-lock">
+                  <span class="text-lg">🔒</span>
+                  <span class="text-[10px] font-semibold mt-1 px-2 py-0.5 rounded-full bg-black/50">PRO</span>
+                </div>
+              ` : ''}
+            </div>
+            <div class="mt-2 flex items-start justify-between gap-1">
+              <div class="min-w-0">
+                <p class="text-xs font-semibold truncate">${theme.name}</p>
+                <p class="text-[10px]" style="color: var(--text-secondary)">${theme.free ? 'Free' : 'Pro'}</p>
+              </div>
+              <button class="text-[11px] px-2 py-1 rounded-lg glass shrink-0" onclick="event.stopPropagation(); downloadWallpaper('${theme.id}')">Save</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('themeCountBadge').textContent = `${THEMES.length} themes`;
+    }
+
+    function renderFeaturedTheme() {
+      const theme = THEMES.find(t => t.id === currentThemeId) || THEMES[0];
+      const card = document.getElementById('featuredThemeCard');
+      card.innerHTML = `
+        <div class="flex gap-3 items-center">
+          <div class="w-16 h-24 rounded-xl shrink-0" style="background: ${theme.wallpaper}; border: 1px solid var(--card-border)"></div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold">${theme.name}</p>
+            <p class="text-xs mt-0.5" style="color: var(--text-secondary)">${theme.free ? 'Free theme' : 'Pro theme'} • Active</p>
+            <button class="mt-2 text-xs font-medium px-3 py-1.5 rounded-full" style="background: var(--accent-soft); color: var(--accent)" onclick="downloadWallpaper('${theme.id}')">Save Wallpaper</button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =====================================================
+       NAVIGATION
+       ===================================================== */
+    function switchView(view) {
+      document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+      document.getElementById(`view-${view}`).classList.remove('hidden');
+      document.querySelectorAll('.nav-item').forEach(n => {
+        n.classList.toggle('active', n.dataset.view === view);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =====================================================
+       UTILITIES
+       ===================================================== */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = String(now.getMinutes()).padStart(2, '0');
+      // iOS style 12h without AM/PM in status bar usually shows just time
+      const displayH = h % 12 || 12;
+      document.getElementById('statusTime').textContent = `${displayH}:${m}`;
+    }
+
+    /* =====================================================
+       INIT
+       ===================================================== */
+    function init() {
+      updateClock();
+      setInterval(updateClock, 30000);
+      updateStreak();
+      loadDailyQuote();
+      restoreMood();
+
+      // Apply saved theme without toast
+      const theme = THEMES.find(t => t.id === currentThemeId) || THEMES[0];
+      const root = document.documentElement;
+      Object.entries(theme.vars).forEach(([k, v]) => root.style.setProperty(k, v));
+      document.body.style.background = theme.wallpaper;
+
+      renderThemeGrid();
+      renderFeaturedTheme();
+
+      // Close modal on overlay click
+      document.getElementById('unlockModal').addEventListener('click', e => {
+        if (e.target.id === 'unlockModal') closeUnlockModal();
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
